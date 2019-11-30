@@ -1,13 +1,8 @@
-from unittest import TestCase
-from starlette.testclient import TestClient
-from main import app
+from tests.utils import APITestCase
 
 
-client = TestClient(app)
-
-
-class MainTestCase(TestCase):
+class MainTestCase(APITestCase):
 
     def test_get_home(self):
-        resp = client.get("/")
+        resp = self.client.get("/")
         self.assertEqual(resp.json(), {'message': 'Welcome to dimini.sh'})
