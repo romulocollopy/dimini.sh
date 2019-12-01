@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body
 from pydantic import BaseModel
 from app.use_cases import CreateShortCodeUseCase, GetShortCodeUseCase
+from app.repositories.url import ShortCodeNotFound
 
 router = APIRouter()
 
@@ -17,7 +18,11 @@ async def create_short_code(body: RawUrl):
 @router.get("/{short_code}")
 async def get_short_code(short_code: str):
     use_case = GetShortCodeUseCase()
-    url = await use_case.execute(short_code)
+    try:
+        url = await use_case.execute(short_code)
+    except ShortCodeNotFound:
+        return {'reason': "Not Found"}
+
     return {'url': url.original}
 
 @router.get("/{short_code}/stats/")

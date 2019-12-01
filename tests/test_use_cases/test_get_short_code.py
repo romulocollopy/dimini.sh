@@ -8,7 +8,7 @@ class GetShortCodeUseCaseTestCase(IsolatedAsyncioTestCase):
 
     def setUp(self):
         self.url1 = fixtures.URL1
-        self.repository = mock.Mock()
+        self.repository = mock.AsyncMock()
         self.repository.get_by_short_code.return_value = self.url1
         self.use_case = GetShortCodeUseCase(repo=self.repository)
 

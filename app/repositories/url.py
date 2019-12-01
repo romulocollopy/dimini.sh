@@ -1,6 +1,9 @@
 from app.domain import Url
 import motor.motor_asyncio
 
+class ShortCodeNotFound(Exception):
+    pass
+
 
 class UrlRepository:
     COLLECTION_NAME = "url_collection"
@@ -14,6 +17,8 @@ class UrlRepository:
 
     async def get_by_short_code(self, short_code : str) -> str:
         url = await self.collection.find_one({'short_code': short_code})
+        if not url:
+            raise ShortCodeNotFound()
         return await self.to_domain(url)
 
     @classmethod

@@ -9,8 +9,8 @@ class CreateShortCodeUseCaseTestCase(IsolatedAsyncioTestCase):
     def setUp(self):
         self.url1, self.url2 = fixtures.URL1, fixtures.URL2
         self.short_code_service = mock.Mock()
-        self.short_code_service.create_code.return_value = "AAAA"
-        self.repository = mock.Mock()
+        self.short_code_service.create_code = mock.Mock(return_value = "AAAA")
+        self.repository = mock.AsyncMock()
         self.factory = UrlFactory(self.short_code_service)
         self.use_case = CreateShortCodeUseCase(repo=self.repository,
                                                factory=self.factory)
