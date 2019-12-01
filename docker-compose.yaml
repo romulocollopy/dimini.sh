@@ -1,0 +1,21 @@
+version: '3.6'
+
+services:
+  app:
+    container_name: diminish_app
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "9099:9099"
+    depends_on:
+      - mongodb
+
+  mongo:
+    image: mongo:4.2.1
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+
