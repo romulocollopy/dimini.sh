@@ -10,15 +10,19 @@ class Url(BaseModel):
     query: dict
     fragment: str
     original: str
+    unparsed: str = None
+    short_code: str = None
 
     @classmethod
-    def parse(cls, url_str):
+    def build(cls, url_str: str):
         parsed = parse.urlparse(url_str)
         kwargs = parsed._asdict()
         kwargs["query"] = parse.parse_qs(kwargs["query"])
-        return cls(original=url_str, **kwargs)
+        inst = cls(original=url_str, **kwargs)
+        inst.set_unparsed()
+        return inst
 
-    def unparse(self):
+    def _unparse(self) -> str:
         query = parse.urlencode(self.query, doseq=True)
         return parse.urlunparse(
             (
@@ -31,3 +35,5 @@ class Url(BaseModel):
             )
         )
 
+    def set_unparsed(self) -> None:
+        self.unparsed = self._unparse()

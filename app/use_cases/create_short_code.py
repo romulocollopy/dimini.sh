@@ -1,4 +1,5 @@
 from app.services import GenerateShortCodeService
+from app.domain import Url
 
 
 class CreateShortCodeUseCase:
@@ -7,4 +8,7 @@ class CreateShortCodeUseCase:
         self.service = code_generator or GenerateShortCodeService()
 
     def execute(self, url: str) -> str:
-        return self.service.create_code()
+        url = Url.build(url)
+        short_code = self.service.create_code()
+        url.short_code = short_code
+        return short_code
