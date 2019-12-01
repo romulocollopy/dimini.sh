@@ -1,5 +1,7 @@
 -r base.in
 
+pip
+pip-tools
+
 black
-ipdb
 requests

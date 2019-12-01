@@ -1,14 +1,32 @@
-from unittest import TestCase
-from app.domain import Url
+from unittest import TestCase, mock
+from app.domain import Url, UrlFactory
 from tests import fixtures
 
 
 class UrlTestCase(TestCase):
 
+    def setUp(self):
+        self.short_code_service = mock.Mock()
+
     def test_url1_build(self):
-        url = Url.build(fixtures.URL1)
+        url = Url(fixtures.URL1, self.short_code_service)
         self.assertIsInstance(url, Url)
 
     def test_url2_build(self):
-        url = Url.build(fixtures.URL2)
+        url = Url(fixtures.URL2, self.short_code_service)
+        self.assertIsInstance(url, Url)
+
+
+class UrlFactoryTestCase(TestCase):
+    # TODO decouple from Url implementation with mock
+
+    def setUp(self):
+        self.factory = UrlFactory()
+
+    def test_url1_build(self):
+        url = self.factory.build(fixtures.URL1)
+        self.assertIsInstance(url, Url)
+
+    def test_url2_build(self):
+        url = self.factory.build(fixtures.URL2)
         self.assertIsInstance(url, Url)
