@@ -7,21 +7,7 @@ class UrlTestCase(TestCase):
 
     def setUp(self):
         self.short_code_service = mock.Mock()
-
-    def test_url1_build(self):
-        url = Url(fixtures.URL1, self.short_code_service)
-        self.assertIsInstance(url, Url)
-
-    def test_url2_build(self):
-        url = Url(fixtures.URL2, self.short_code_service)
-        self.assertIsInstance(url, Url)
-
-
-class UrlFactoryTestCase(TestCase):
-    # TODO decouple from Url implementation with mock
-
-    def setUp(self):
-        self.factory = UrlFactory()
+        self.factory = UrlFactory(self.short_code_service)
 
     def test_url1_build(self):
         url = self.factory.build(fixtures.URL1)

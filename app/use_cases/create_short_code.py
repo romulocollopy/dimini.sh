@@ -1,4 +1,4 @@
-from app.domain import Url, UrlFactory
+from app.domain import UrlFactory
 from app.repositories import UrlRepository
 
 
@@ -8,7 +8,7 @@ class CreateShortCodeUseCase:
         self.repo = repo or UrlRepository()
         self.factory = factory or UrlFactory()
 
-    def execute(self, raw_url: str) -> str:
+    async def execute(self, raw_url: str) -> str:
         url = self.factory.build(raw_url)
-        self.repo.save(url)
+        await self.repo.save(url)
         return url.short_code

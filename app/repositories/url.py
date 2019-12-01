@@ -7,23 +7,21 @@ class UrlRepository:
     _db = None
     collection = None
 
-    async def save(self, url: Url) -> None:
+    async def save(self, url: Url) -> str:
         ormUrl = self.to_orm(url)
         result = await self.collection.insert_one(ormUrl)
         return result.inserted_id
 
+    async def get_by_short_code(self, short_code : str) -> str:
+        url = await self.collection.find_one({'short_code': short_code})
+        return await self.to_domain(url)
+
     @classmethod
-    async def connect(cls, database_url: str, database_name: str, io_loop=None) -> None:
+    async def connect(cls, database_url: str, database_name: str) -> None:
         if cls._db and cls.collection:
             return
 
-        kwargs = {}
-        if io_loop:
-            kwargs['io_loop'] = io_loop
-
-        client = motor.motor_asyncio.AsyncIOMotorClient(
-            database_url, **kwargs
-        )
+        client = motor.motor_asyncio.AsyncIOMotorClient(database_url)
         cls._db = getattr(client, database_name)
         cls.collection = getattr(cls._db, cls.COLLECTION_NAME)
 
@@ -35,3 +33,6 @@ class UrlRepository:
     @staticmethod
     def to_orm(url):
         return dict(url)
+
+    async def to_domain(self, url : dict) -> Url:
+        return Url(**url)
