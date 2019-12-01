@@ -15,8 +15,14 @@ class UrlRepository:
         result = await self.collection.insert_one(ormUrl)
         return result.inserted_id
 
+    async def increment_access_count(self, url: Url) -> str:
+        result = await self.collection.update_one(
+            {"short_code": url.short_code},
+            { "$inc" : {"access_count": 1}}
+        )
+
     async def get_by_short_code(self, short_code : str) -> str:
-        url = await self.collection.find_one({'short_code': short_code})
+        url = await self.collection.find_one({"short_code": short_code})
         if not url:
             raise ShortCodeNotFound()
         return await self.to_domain(url)

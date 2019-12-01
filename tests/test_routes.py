@@ -28,7 +28,20 @@ class RoutesTestCase(IsolatedAsyncioTestCase):
             'unparsed': fixtures.URL1,
             'short_code': 'AAAA'}
         )
+        url2 = Url(**{
+            'scheme': '',
+            'netloc': '',
+            'path': '',
+            'params': '',
+            'query': {},
+            'fragment': '',
+            'original': fixtures.URL1,
+            'unparsed': fixtures.URL1,
+            'access_count': 593,
+            'short_code': 'BBBB'}
+        )
         await repo.save(url)
+        await repo.save(url2)
 
     def test_create_short_code_route_configured(self):
         # TODO: this test could be better by mocking the use_case,
@@ -47,8 +60,8 @@ class RoutesTestCase(IsolatedAsyncioTestCase):
 
     def test_get_short_code_stats_route_configured(self):
         with TestClient(app) as client:
-            resp = client.get("/AAAA/stats")
-        self.assertEqual(resp.json(), None)
+            resp = client.get("/BBBB/stats")
+        self.assertEqual(resp.json()["accessCount"], 593)
 
     def test_get_home(self):
         with TestClient(app) as client:

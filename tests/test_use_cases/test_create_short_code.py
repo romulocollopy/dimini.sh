@@ -1,3 +1,4 @@
+from freezegun import freeze_time
 from unittest import mock, IsolatedAsyncioTestCase
 from app.use_cases import CreateShortCodeUseCase
 from app.domain import UrlFactory
@@ -23,6 +24,7 @@ class CreateShortCodeUseCaseTestCase(IsolatedAsyncioTestCase):
         self.assertIsInstance(short_code, str)
         self.assertEqual(len(short_code), 4)
 
+    @freeze_time("2020-10-03")
     async def test_execute_calls_repository_save(self):
         url = self.factory.build(self.url1)
         short_code = await self.use_case.execute(self.url1)

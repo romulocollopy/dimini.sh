@@ -1,4 +1,5 @@
 from urllib import parse
+from datetime import datetime
 from pydantic import BaseModel
 from app.services import GenerateShortCodeService
 
@@ -13,9 +14,12 @@ class Url(BaseModel):
     original: str
     unparsed: str = None
     short_code: str = None
+    access_count: int = 0
+    created_at : datetime = None
 
     def __init__(self, short_code_service=None, **kwargs):
         super().__init__(**kwargs)
+        self.created_at = datetime.now()
         self.set_unparsed()
         if not self.short_code:
             self.short_code = self._generate_short_code(short_code_service)
