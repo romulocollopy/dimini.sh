@@ -1,3 +1,4 @@
+pip  # ensure last version
 fastapi
 uvicorn
 motor

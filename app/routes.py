@@ -1,23 +1,25 @@
 from fastapi import APIRouter, Body
-from pydantic import BaseModel
 from starlette.responses import JSONResponse
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_201_CREATED
-from app.use_cases import CreateShortCodeUseCase, GetShortCodeUseCase
+from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
+
 from app.observers import AccessCountObserver
 from app.repositories.url import ShortCodeNotFound
+from app.serializers import (OriginalUrlSerializer, RawUrl,
+                             ShortCodeSerializer, StatsSerializer)
+from app.use_cases import CreateShortCodeUseCase, GetShortCodeUseCase
 
 router = APIRouter()
-
-class RawUrl(BaseModel):
-    url: str
 
 
 @router.post("/")
 async def create_short_code(body: RawUrl):
     use_case = CreateShortCodeUseCase()
     short_code = await use_case.execute(body.url)
-    return JSONResponse(status_code=HTTP_201_CREATED,
-                        content={'short_code': short_code})
+    return JSONResponse(
+        status_code=HTTP_201_CREATED,
+        content=ShortCodeSerializer.serialize({"short_code": short_code}),
+    )
+
 
 @router.get("/{short_code}")
 async def get_short_code(short_code: str):
@@ -26,10 +28,12 @@ async def get_short_code(short_code: str):
     try:
         url = await use_case.execute(short_code)
     except ShortCodeNotFound:
-        return JSONResponse(status_code=HTTP_404_NOT_FOUND,
-                            content={'reason': "Not Found"})
+        return JSONResponse(
+            status_code=HTTP_404_NOT_FOUND, content={"reason": "Not Found"}
+        )
 
-    return {'url': url.original}
+    return OriginalUrlSerializer.serialize({"url": url.original})
+
 
 @router.get("/{short_code}/stats/")
 async def get_short_code_stats(short_code: str):
@@ -37,10 +41,12 @@ async def get_short_code_stats(short_code: str):
     try:
         url = await use_case.execute(short_code)
     except ShortCodeNotFound:
-        return {'reason': "Not Found"}
+        return {"reason": "Not Found"}
 
-    return {
-        'url': url.original,
-        'creation_date': url,
-        'accessCount': url.access_count,
-    }
+    return StatsSerializer.serialize(
+        {
+            "url": url.original,
+            "creationDate": url.created_at,
+            "accessCount": url.access_count,
+        }
+    )

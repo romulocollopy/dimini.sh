@@ -1,7 +1,9 @@
 import unittest
+
 import decouple
+
+from app.domain import Url, UrlFactory
 from app.repositories import UrlRepository
-from app.domain import UrlFactory, Url
 from tests import fixtures
 
 DATABASE_URL = decouple.config("TEST_DATABASE_URL")
@@ -9,7 +11,6 @@ DATABASE_NAME = decouple.config("TEST_DATABASE_NAME")
 
 
 class UrlRepositoryTestCase(unittest.IsolatedAsyncioTestCase):
-
     async def asyncSetUp(self):
         await UrlRepository.connect(DATABASE_URL, DATABASE_NAME)
         self.repo = UrlRepository()

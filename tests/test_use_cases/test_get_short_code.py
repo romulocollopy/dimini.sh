@@ -1,11 +1,11 @@
-from unittest import mock, IsolatedAsyncioTestCase
-from app.use_cases import GetShortCodeUseCase
+from unittest import IsolatedAsyncioTestCase, mock
+
 from app.domain import UrlFactory
+from app.use_cases import GetShortCodeUseCase
 from tests import fixtures
 
 
 class GetShortCodeUseCaseTestCase(IsolatedAsyncioTestCase):
-
     def setUp(self):
         self.url1 = fixtures.URL1
         self.repository = mock.AsyncMock()

@@ -1,10 +1,10 @@
 from unittest import TestCase, mock
+
 from app.domain import Url, UrlFactory
 from tests import fixtures
 
 
 class UrlTestCase(TestCase):
-
     def setUp(self):
         self.short_code_service = mock.Mock()
         self.factory = UrlFactory(self.short_code_service)

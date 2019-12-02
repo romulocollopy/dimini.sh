@@ -1,20 +1,22 @@
+from unittest import IsolatedAsyncioTestCase, mock
+
 from freezegun import freeze_time
-from unittest import mock, IsolatedAsyncioTestCase
-from app.use_cases import CreateShortCodeUseCase
+
 from app.domain import UrlFactory
+from app.use_cases import CreateShortCodeUseCase
 from tests import fixtures
 
 
 class CreateShortCodeUseCaseTestCase(IsolatedAsyncioTestCase):
-
     def setUp(self):
         self.url1, self.url2 = fixtures.URL1, fixtures.URL2
         self.short_code_service = mock.Mock()
-        self.short_code_service.create_code = mock.Mock(return_value = "AAAA")
+        self.short_code_service.create_code = mock.Mock(return_value="AAAA")
         self.repository = mock.AsyncMock()
         self.factory = UrlFactory(self.short_code_service)
-        self.use_case = CreateShortCodeUseCase(repo=self.repository,
-                                               factory=self.factory)
+        self.use_case = CreateShortCodeUseCase(
+            repo=self.repository, factory=self.factory
+        )
 
     async def test_instantiate(self):
         self.assertIsInstance(self.use_case, CreateShortCodeUseCase)

@@ -1,5 +1,7 @@
-from app.domain import Url
 import motor.motor_asyncio
+
+from app.domain import Url
+
 
 class ShortCodeNotFound(Exception):
     pass
@@ -17,11 +19,10 @@ class UrlRepository:
 
     async def increment_access_count(self, url: Url) -> str:
         result = await self.collection.update_one(
-            {"short_code": url.short_code},
-            { "$inc" : {"access_count": 1}}
+            {"short_code": url.short_code}, {"$inc": {"access_count": 1}}
         )
 
-    async def get_by_short_code(self, short_code : str) -> str:
+    async def get_by_short_code(self, short_code: str) -> str:
         url = await self.collection.find_one({"short_code": short_code})
         if not url:
             raise ShortCodeNotFound()
@@ -45,5 +46,5 @@ class UrlRepository:
     def to_orm(url):
         return dict(url)
 
-    async def to_domain(self, url : dict) -> Url:
+    async def to_domain(self, url: dict) -> Url:
         return Url(**url)

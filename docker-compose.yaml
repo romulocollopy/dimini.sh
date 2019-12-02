@@ -1,21 +1,29 @@
-version: '3.6'
+version: '3.7'
 
 services:
   app:
     container_name: diminish_app
     build:
       dockerfile: Dockerfile
+      context: .
     ports:
-      - "9099:9099"
+      - 9099:9099
     depends_on:
-      - mongodb
+      - dbserver
 
-  mongo:
+  dbserver:
     image: mongo:4.2.1
     restart: always
     ports:
-      - "27017:27017"
+      - 27000:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
 
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - dbserver
+    command: python test_runner.py

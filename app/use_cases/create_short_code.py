@@ -3,7 +3,6 @@ from app.repositories import UrlRepository
 
 
 class CreateShortCodeUseCase:
-
     def __init__(self, repo=None, factory=None):
         self.repo = repo or UrlRepository()
         self.factory = factory or UrlFactory()

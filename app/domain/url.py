@@ -1,6 +1,8 @@
-from urllib import parse
 from datetime import datetime
+from urllib import parse
+
 from pydantic import BaseModel
+
 from app.services import GenerateShortCodeService
 
 
@@ -15,7 +17,7 @@ class Url(BaseModel):
     unparsed: str = None
     short_code: str = None
     access_count: int = 0
-    created_at : datetime = None
+    created_at: datetime = None
 
     def __init__(self, short_code_service=None, **kwargs):
         super().__init__(**kwargs)
@@ -27,14 +29,7 @@ class Url(BaseModel):
     def _unparse(self) -> str:
         query = parse.urlencode(self.query, doseq=True)
         return parse.urlunparse(
-            (
-                self.scheme,
-                self.netloc,
-                self.path,
-                self.params,
-                query,
-                self.fragment
-            )
+            (self.scheme, self.netloc, self.path, self.params, query, self.fragment)
         )
 
     def set_unparsed(self) -> None:
@@ -45,12 +40,11 @@ class Url(BaseModel):
         return short_code_service.create_code()
 
 
-class UrlFactory():
-
+class UrlFactory:
     def __init__(self, short_code_service=None) -> None:
         self.short_code_service = short_code_service or GenerateShortCodeService()
 
-    def build(self, url_str : str) -> Url:
+    def build(self, url_str: str) -> Url:
         parsed = parse.urlparse(url_str)
         kwargs = parsed._asdict()
         kwargs["original"] = url_str

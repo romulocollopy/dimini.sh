@@ -1,10 +1,11 @@
 import logging
+
 from app.repositories import UrlRepository
 
 logger = logging.getLogger(__name__)
 
-class GetShortCodeUseCase:
 
+class GetShortCodeUseCase:
     def __init__(self, observers=None, repo=None):
         self.repo = repo or UrlRepository()
         self.observers = observers or []
@@ -22,4 +23,3 @@ class GetShortCodeUseCase:
             logger.error(f"Observer error: ${ex.message}")
             if raises:
                 raise ex
-
