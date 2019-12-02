@@ -54,5 +54,5 @@ and access `http://0.0.0.0:9099/docs`
 - restric `ALLOWED_HOSTS`
 - return endpoints description in `/`
 - redirect `302` when get `/{short_code}` through browser
-- regognize url posted twice and return same code
+- recognize url posted twice and return same code
 - add more character options to `short_code` string
