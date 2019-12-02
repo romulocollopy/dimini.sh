@@ -1,31 +1,33 @@
-from unittest import TestCase, mock
+from unittest import IsolatedAsyncioTestCase, mock
+
+from freezegun import freeze_time
+
+from app.domain import UrlFactory
 from app.use_cases import CreateShortCodeUseCase
-
-URL1 = (
-    "https://www.openstreetmap.org/search?whereami=1&"
-    "query=-22.93396%2C-43.18033#map=19/-22.93396/-43.18033"
-)
-
-URL2 = (
-    "https://www.basic-fit.com/nl-nl/sportschool/"
-    "basic-fit-amsterdam-wfc-1bd19ff0981849b19081bbf0f20e1ac2.html"
-    "?utm_source=google&utm_medium=organic&utm_content=gmb&"
-    "utm_campaign=localmaps"
-)
+from tests import fixtures
 
 
-class CreateShortCodeUseCaseTestCase(TestCase):
-
+class CreateShortCodeUseCaseTestCase(IsolatedAsyncioTestCase):
     def setUp(self):
-        self.url1, self.url2 = URL1, URL2
+        self.url1, self.url2 = fixtures.URL1, fixtures.URL2
         self.short_code_service = mock.Mock()
         self.short_code_service.create_code = mock.Mock(return_value="AAAA")
-        self.use_case = CreateShortCodeUseCase(self.short_code_service)
+        self.repository = mock.AsyncMock()
+        self.factory = UrlFactory(self.short_code_service)
+        self.use_case = CreateShortCodeUseCase(
+            repo=self.repository, factory=self.factory
+        )
 
-    def test_instantiate(self):
+    async def test_instantiate(self):
         self.assertIsInstance(self.use_case, CreateShortCodeUseCase)
 
-    def test_execute_returns_string(self):
-        short_code = self.use_case.execute(self.url1)
+    async def test_execute_returns_string(self):
+        short_code = await self.use_case.execute(self.url1)
         self.assertIsInstance(short_code, str)
         self.assertEqual(len(short_code), 4)
+
+    @freeze_time("2020-10-03")
+    async def test_execute_calls_repository_save(self):
+        url = self.factory.build(self.url1)
+        short_code = await self.use_case.execute(self.url1)
+        self.repository.save.assert_called_once_with(url)

@@ -1,10 +1,13 @@
-from app.services import GenerateShortCodeService
+from app.domain import UrlFactory
+from app.repositories import UrlRepository
 
 
 class CreateShortCodeUseCase:
+    def __init__(self, repo=None, factory=None):
+        self.repo = repo or UrlRepository()
+        self.factory = factory or UrlFactory()
 
-    def __init__(self, code_generator=None):
-        self.service = code_generator or GenerateShortCodeService()
-
-    def execute(self, url: str) -> str:
-        return self.service.create_code()
+    async def execute(self, raw_url: str) -> str:
+        url = self.factory.build(raw_url)
+        await self.repo.save(url)
+        return url.short_code
