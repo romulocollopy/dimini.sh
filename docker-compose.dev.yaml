@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      target: develop
+    ports:
+      - 5000:9099
+    depends_on:
+      - dbserver
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: develop
+    command: python test_runner.py

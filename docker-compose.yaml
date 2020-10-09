@@ -6,8 +6,11 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+      target: production
     ports:
-      - 9099:9099
+      - 9099:5000
+    volumes:
+      - .:/app
     depends_on:
       - dbserver
 
@@ -19,11 +22,3 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
-
-  tests:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - dbserver
-    command: python test_runner.py
