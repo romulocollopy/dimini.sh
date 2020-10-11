@@ -13,7 +13,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PATH="${VIRTUAL_ENV}bin:$PATH"
 
 RUN apt-get update \
-  && apt-get install gcc -y \
+  && apt-get install gcc git -y \
   && apt-get clean
 
 RUN useradd -m -d ${HOME_DIR} ${USER_NAME} -u 1001
@@ -62,7 +62,7 @@ COPY . ${APP_DIR}
 
 RUN poetry shell
 
-EXPOSE 9098
+EXPOSE 5000
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
 

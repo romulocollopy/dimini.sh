@@ -1,11 +1,15 @@
-from fastapi import APIRouter, Body
-from starlette.responses import JSONResponse
+from fastapi import APIRouter, Request, HTTPException
+from fastapi.responses import RedirectResponse, JSONResponse
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 
 from app.observers import AccessCountObserver
 from app.repositories.url import ShortCodeNotFound
-from app.serializers import (OriginalUrlSerializer, RawUrl,
-                             ShortCodeSerializer, StatsSerializer)
+from app.serializers import (
+    OriginalUrlSerializer,
+    RawUrl,
+    ShortCodeSerializer,
+    StatsSerializer,
+)
 from app.use_cases import CreateShortCodeUseCase, GetShortCodeUseCase
 
 router = APIRouter()
@@ -22,17 +26,24 @@ async def create_short_code(body: RawUrl):
 
 
 @router.get("/{short_code}")
-async def get_short_code(short_code: str):
+async def get_short_code(short_code: str, request: Request):
     observers = [AccessCountObserver()]
     use_case = GetShortCodeUseCase(observers=observers)
+    is_ajax = "json" in request._headers.get("accept")
     try:
         url = await use_case.execute(short_code)
     except ShortCodeNotFound:
-        return JSONResponse(
-            status_code=HTTP_404_NOT_FOUND, content={"reason": "Not Found"}
-        )
+        if is_ajax:
+            return JSONResponse(
+                status_code=HTTP_404_NOT_FOUND,
+                content={"reason": f"{short_code} not Found"},
+            )
+        return HTTPException(status_code=404, detail=f"{short_code} not found")
 
-    return OriginalUrlSerializer.serialize({"url": url.original})
+    if is_ajax:
+        return OriginalUrlSerializer.serialize({"url": url.original})
+
+    return RedirectResponse(url.original)
 
 
 @router.get("/{short_code}/stats/")

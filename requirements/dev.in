@@ -1,9 +1,0 @@
--r base.in
-
-pip
-pip-tools
-
-black
-isort
-requests
-freezegun

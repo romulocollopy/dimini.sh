@@ -1,5 +1,0 @@
-pip  # ensure last version
-fastapi
-uvicorn
-motor
-python-decouple

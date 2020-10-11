@@ -5,9 +5,10 @@ services:
     build:
       target: develop
     ports:
-      - 5000:9099
+      - 5000:5000
     depends_on:
       - dbserver
+    command: "uvicorn main:app --host 0.0.0.0 --port 5000 --reload --header \"content-security-policy:default-src 'self'\""
 
   tests:
     build:
