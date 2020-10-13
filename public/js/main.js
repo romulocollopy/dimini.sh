@@ -39,12 +39,14 @@
       const _this = this;
 
       return function() {
+        let response;
         if (this.status > 400) {
           return _this.onError().bind(this)();
         }
 
         try {
-          response = JSON.parse(this.responseText).short_code;
+          const short_code = JSON.parse(this.responseText).short_code;
+          response = `https://dimini.sh/${short_code}`
         } catch {
           response = this.responseText;
         }
