@@ -15,7 +15,7 @@ from app.use_cases import CreateShortCodeUseCase, GetShortCodeUseCase
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("/create")
 async def create_short_code(body: RawUrl):
     use_case = CreateShortCodeUseCase()
     short_code = await use_case.execute(body.url)
