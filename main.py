@@ -1,5 +1,6 @@
 import decouple
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 from app.repositories import UrlRepository
 from app.routes import router
@@ -12,7 +13,7 @@ DATABASE_NAME = decouple.config("TEST_DATABASE_NAME")
 
 @app.get("/")
 def home():
-    return {"message": "Welcome to dimini.sh"}
+    return RedirectResponse("/ui/", status_code=301)
 
 
 @app.on_event("startup")
