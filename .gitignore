@@ -3,3 +3,4 @@ __pycache__/*
 venv/*
 .ropeproject
 settings.ini
+node_modules/
