@@ -1,0 +1,49 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+  - name: install package management tools
+    apt:
+      name:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+      state: latest
+
+  - name: Add an apt key by id from a keyserver
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: add docker repo
+    apt_repository:
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+      state: present
+      mode: 666
+
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+  - name: Uninstall old Docker
+    apt:
+      name:
+        - docker
+        - docker-compose
+        - docker-engine
+        - docker.io
+        - containerd
+        - runc
+      state: absent
+
+  - name: Install Docker
+    apt:
+      name:
+        - docker-ce
+        - docker-compose
+        - git
+        - cmake
+      state: latest

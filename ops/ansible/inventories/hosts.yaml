@@ -1,0 +1,30 @@
+[app]
+app01 ansible_host=dimini.sh
+
+[app:vars]
+app_user=diminish
+repo=git@github.com:romulocollopy/dimini.sh.git
+user_uid=1007
+
+[db:vars]
+app_user=db
+repo=git@github.com:romulocollopy/dimini.sh.git
+
+[nginx]
+nginx001 ansible_host=proxy.dimini.sh
+
+[nginx:vars]
+app_user=nginx
+repo=git@github.com:romulocollopy/dimini.sh.git
+user_uid=1005
+
+[all:children]
+app
+nginx
+
+[all:vars]
+branch=master
+env_file=prod.env
+
+[webservers:children]
+app

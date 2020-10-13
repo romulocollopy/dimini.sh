@@ -1,0 +1,19 @@
+---
+- hosts: webservers
+  remote_user: "{{ app_user }}"
+  vars:
+    - project_home: "/home/{{ app_user }}/app"
+  tasks:
+  - git:
+      repo: "{{ repo }}"
+      dest: "{{ project_home }}"
+      version: "{{ branch }}"
+      force: true
+  - name: Copy .env
+    copy:
+      src: ../../{{ env_file }}
+      dest: "{{ project_home }}/.env"
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      mode: '755'
+

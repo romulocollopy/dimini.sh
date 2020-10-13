@@ -1,0 +1,49 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+  - name: Create user
+    user:
+       name: "{{ app_user }}"
+       uid: "{{ user_uid }}"
+       groups: admin,docker,nginx
+       shell: /bin/bash
+       generate_ssh_key: true
+
+  - name: Add gitlab and Github to known_hosts
+    shell: |
+      cp /root/.ssh/authorized_keys /home/{{ app_user }}/.ssh/authorized_keys
+
+      ssh-keyscan -t rsa gitlab.com > /home/{{ app_user }}/.ssh/known_hosts
+      ssh-keyscan -t rsa github.com >> /home/{{ app_user }}/.ssh/known_hosts
+    args:
+      executable: /bin/bash
+
+  - name: Change file ownership, group and permissions
+    file:
+      path: /home/{{ app_user }}/
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      mode: '755'
+      recurse: true
+
+  - name: Create assets dir
+    file:
+      path: /home/{{ app_user }}/assets
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      state: directory
+
+  - name: Create logs dir
+    file:
+      path: /home/{{ app_user }}/assets
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      state: directory
+
+  - name: Change file permissions of private key
+    file:
+      path: /home/{{ app_user }}/.ssh/id_rsa
+      owner: "{{ app_user }}"
+      group: "{{ app_user }}"
+      mode: '600'

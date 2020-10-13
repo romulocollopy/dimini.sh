@@ -2,15 +2,14 @@ version: '3.7'
 
 services:
   app:
-    container_name: diminish_app
     build:
-      dockerfile: Dockerfile
-      context: .
       target: production
+      dockerfile: ./ops/Dockerfile
+      context: ..
     ports:
       - 9099:5000
     volumes:
-      - .:/app
+      - ..:/app
     depends_on:
       - dbserver
 

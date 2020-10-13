@@ -1,0 +1,18 @@
+---
+- hosts: app
+  remote_user: "{{ app_user }}"
+  vars:
+    app_home: "/home/{{ app_user }}/app"
+  tasks:
+  - name: Build project with make
+    make:
+      chdir: "{{ app_home }}"
+      target: compose-build
+  - name: Stop previous container
+    make:
+      chdir: "{{ app_home }}"
+      target: compose-down
+  - name: Start new container
+    make:
+      chdir: "{{ app_home }}"
+      target: compose-up

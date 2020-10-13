@@ -27,10 +27,11 @@ RUN python -m venv ${VIRTUAL_ENV} \
   && poetry config virtualenvs.in-project true
 
 WORKDIR ${APP_DIR}
-COPY settings.example.ini settings.ini
-COPY pyproject.toml ./
 
-RUN poetry install --no-dev
+COPY settings.example.ini ${APP_DIR}settings.ini
+COPY pyproject.toml ${APP_DIR}
+
+RUN poetry install
 
 
 FROM python:3-slim as production
@@ -63,19 +64,5 @@ COPY . ${APP_DIR}
 RUN poetry shell
 
 EXPOSE 5000
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
-
-
-FROM base as develop
-
-ARG USER_NAME=app
-ARG HOME_DIR=/home/${USER_NAME}/
-ARG APP_DIR=/app/
-
-COPY --from=production $APP_DIR $APP_DIR
-RUN poetry install
-
-EXPOSE 9098
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
