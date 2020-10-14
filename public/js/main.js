@@ -1,5 +1,5 @@
 (function(){
-  const ERROR_MESSAGE = "Sory, something whent wrong... \n\n";
+  const ERROR_MESSAGE = "Sory, something went wrong... \n\n";
 
   class Page{
     constructor(body){
@@ -7,6 +7,7 @@
       this.result_box = body.querySelector("div.result");
       this.result_text = this.result_box.querySelector("#shortened");
       this.error_text = this.result_box.querySelector("#error");
+      this.message_box = body.querySelector("#message")
       this.init_form();
     }
 
@@ -46,12 +47,13 @@
 
         try {
           const short_code = JSON.parse(this.responseText).short_code;
-          response = `https://dimini.sh/${short_code}`
+          response = `http://dimini.sh/${short_code}`
         } catch {
           response = this.responseText;
         }
         _this.error_text.innerHTML = '';
         _this.result_text.innerHTML = response;
+        _this.message_box.innerHTML = `access <a href="${response}/about" target="_blank();">${response}/about</a> for information about this url`;
       }
     }
 

@@ -46,7 +46,7 @@ async def get_short_code(short_code: str, request: Request):
     return RedirectResponse(url.original)
 
 
-@router.get("/{short_code}/stats/")
+@router.get("/{short_code}/about")
 async def get_short_code_stats(short_code: str):
     use_case = GetShortCodeUseCase()
     try:
