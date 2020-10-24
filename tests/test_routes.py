@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from unittest import IsolatedAsyncioTestCase
 
 import decouple
@@ -51,22 +52,24 @@ class RoutesTestCase(IsolatedAsyncioTestCase):
         # but in this function based approach of fastapi we would generate
         # unnecessary extra complexity
         with TestClient(app) as client:
-            resp = client.post("/", json={"url": fixtures.URL1})
+            resp = client.post("/create/", json={"url": fixtures.URL1})
         short_code = resp.json()["short_code"]
         self.assertIsInstance(short_code, str)
         self.assertEqual(len(short_code), 4)
 
     def test_get_short_code_route_configured(self):
         with TestClient(app) as client:
-            resp = client.get("/AAAA")
+            resp = client.get("/AAAA", headers=dict(accept="application/json"))
         self.assertEqual(resp.json()["url"], fixtures.URL1)
 
     def test_get_short_code_stats_route_configured(self):
         with TestClient(app) as client:
-            resp = client.get("/BBBB/stats")
+            resp = client.get("/BBBB/about")
         self.assertEqual(resp.json()["accessCount"], 593)
 
     def test_get_home(self):
         with TestClient(app) as client:
-            resp = client.get("/")
-        self.assertEqual(resp.json(), {"message": "Welcome to dimini.sh"})
+            resp = client.get("/", allow_redirects=False)
+
+        self.assertEqual(resp.status_code, HTTPStatus.MOVED_PERMANENTLY)
+        self.assertEquals(resp.next.url, "http://testserver/ui/")
