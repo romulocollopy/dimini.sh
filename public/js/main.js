@@ -9,7 +9,7 @@
       this.error_text = this.result_box.querySelector("#error");
       this.message_box = body.querySelector("#message")
       this.init_form();
-      this.host = `${document.location.protocol}//${document.location.host}`;
+      this.host = `http://${document.location.host}`;
     }
 
     init_form(){
