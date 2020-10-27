@@ -14,14 +14,14 @@ test:
 bash:
 	${DOCKER_COMPOSE_DEV_RUN} --entrypoint="" app bash
 
-run:
-	${DOCKER_COMPOSE_DEV_RUN} --service-ports app
-
-run-uwsgi:
+run-backend:
 	${DOCKER_COMPOSE_RUN} --service-ports app
 
 compose-up:
 	${DOCKER_COMPOSE} up -d
+
+compose-dev:
+	${DOCKER_COMPOSE_DEV} up
 
 compose-down:
 	${DOCKER_COMPOSE} down

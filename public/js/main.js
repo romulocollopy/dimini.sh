@@ -9,6 +9,7 @@
       this.error_text = this.result_box.querySelector("#error");
       this.message_box = body.querySelector("#message")
       this.init_form();
+      this.host = `${document.location.protocol}//${document.location.host}`;
     }
 
     init_form(){
@@ -47,7 +48,7 @@
 
         try {
           const short_code = JSON.parse(this.responseText).short_code;
-          response = `http://dimini.sh/${short_code}`
+          response = `${_this.host}/${short_code}`
         } catch {
           response = this.responseText;
         }
