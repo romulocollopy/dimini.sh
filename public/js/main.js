@@ -54,7 +54,7 @@
         }
         _this.error_text.innerHTML = '';
         _this.result_text.innerHTML = response;
-        _this.message_box.innerHTML = `access <a href="${response}/about" target="_blank();">${response}/about</a> for information about this url`;
+        _this.message_box.innerHTML = `access <br><a href="${response}/about" target="_blank();">${response}/about</a> for information about this url`;
       }
     }
 

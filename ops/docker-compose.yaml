@@ -15,7 +15,7 @@ services:
 
   dbserver:
     image: mongo:4.4.1
-    restart: always
+    restart: unless-stopped
     ports:
       - 27000:27017
     volumes:
